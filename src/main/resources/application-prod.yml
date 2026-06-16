@@ -1,0 +1,42 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+    show-sql: false
+
+#  rabbitmq:
+#    ssl:
+#      enabled: true
+
+logging:
+  level:
+    root: WARN
+    org.springframework.security: WARN
+    org.hibernate.SQL: OFF
+    com.collabrium: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
+  endpoint:
+    health:
+      show-details: never
+
+  info:
+    env:
+      enabled: false
+
+springdoc:
+  api-docs:
+    enabled: false
+
+  swagger-ui:
+    enabled: false

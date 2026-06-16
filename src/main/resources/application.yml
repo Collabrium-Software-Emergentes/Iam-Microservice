@@ -1,0 +1,102 @@
+server:
+  port: ${PORT:8081}
+  shutdown: graceful
+
+spring:
+  application:
+    name: iam-service
+
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            loggerLevel: basic
+            connectTimeout: 5000
+            readTimeout: 5000
+
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database: PostgreSQL
+
+    hibernate:
+      naming:
+        physical-strategy: com.collabrium.iam.shared.infrastructure.persistence.jpa.configuration.strategy.SnakeCaseWithPluralizedTablePhysicalNamingStrategy
+
+    open-in-view: false
+
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        order_inserts: true
+        order_updates: true
+        jdbc.batch_size: 25
+
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USER}
+    password: ${RABBIT_PASSWORD}
+    virtual-host: ${RABBIT_VIRTUAL_HOST:/}
+
+  jackson:
+    time-zone: UTC
+    serialization:
+      write-dates-as-timestamps: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+
+    register-with-eureka: true
+    fetch-registry: true
+
+    eureka-server-connect-timeout-seconds: 5
+    eureka-server-read-timeout-seconds: 5
+
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.uuid}
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: IAM Service API
+    version: @project.version@
+
+documentation:
+  application:
+    description: @project.description@
+    version: @project.version@
+
+authorization:
+  jwt:
+    secret: ${JWT_SECRET}
+    issuer: ${JWT_ISSUER}
+    audience: ${JWT_AUDIENCE}
+    expiration:
+      days: 1
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+  api-docs:
+    path: /v3/api-docs
+
+  default-produces-media-type: application/json
